@@ -3,6 +3,7 @@ import type { Session } from "@supabase/supabase-js";
 import { supabase, supabaseConfigurado } from "./lib/supabase";
 import { Login } from "./pages/Login";
 import { Clientes } from "./pages/Clientes";
+import { marca } from "./lib/marca";
 
 export function App() {
   const [session, setSession] = useState<Session | null>(null);
@@ -34,7 +35,10 @@ export function App() {
   return (
     <div className="app">
       <header className="barra">
-        <strong className="marca">PAC</strong>
+        <div className="marca">
+          <img src={marca.logos.logoHorizontal} alt={marca.nombre} />
+          {marca.nombre !== marca.producto && <span className="producto">{marca.producto}</span>}
+        </div>
         <span className="suave">{session.user.email}</span>
         <button className="boton-secundario" onClick={() => supabase.auth.signOut()}>Cerrar sesión</button>
       </header>

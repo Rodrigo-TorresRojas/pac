@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { supabase } from "../lib/supabase";
+import { marca } from "../lib/marca";
 
 /** Traduce los errores de Supabase Auth a algo que se pueda resolver. */
 function mensajeDeError(mensaje: string): string {
@@ -29,8 +30,10 @@ export function Login() {
   return (
     <main className="centrado">
       <form className="tarjeta formulario" onSubmit={ingresar}>
-        <h1>PAC</h1>
-        <p className="suave">Plataforma de Apoyo Comercial</p>
+        <div className="titulo-ingreso">
+          <img className="logo-ingreso" src={marca.logos.logo} alt={marca.nombre} />
+          <p className="suave">{marca.producto} · {marca.descripcion}</p>
+        </div>
         <label>
           Correo
           <input id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />

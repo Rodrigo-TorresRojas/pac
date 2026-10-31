@@ -1,13 +1,17 @@
-/* Colores de TECNOCARE: azul marino, azul y naranja */
+/* principal, acento, texto y fondo vienen de marcas/<MARCA>/marca.json (src/lib/marca.ts).
+   Estos valores son solo el respaldo mientras carga. */
 :root {
-  --fondo: #f4f6fb;
+  --principal: #334155;
+  --acento: #0ea5e9;
+  --texto: #0f172a;
+  --fondo: #f5f6f8;
   --tarjeta: #ffffff;
-  --texto: #14213d;
   --suave: #5b6478;
   --borde: #dfe4ee;
-  --azul: #2f6fdb;
-  --naranja: #f28c28;
   --error: #c0392b;
+  --principal-suave: color-mix(in srgb, var(--principal) 12%, white);
+  --acento-suave: color-mix(in srgb, var(--acento) 16%, white);
+  --acento-oscuro: color-mix(in srgb, var(--acento) 70%, black);
   font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
   color: var(--texto);
   background: var(--fondo);
@@ -25,15 +29,19 @@ h1 { margin: 0 0 16px; font-size: 1.6rem; }
 .formulario h1 { margin: 0; }
 label { display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem; font-weight: 600; }
 input { font: inherit; padding: 10px 12px; border: 1px solid var(--borde); border-radius: 8px; }
-input:focus { outline: 2px solid var(--azul); outline-offset: 1px; }
+input:focus { outline: 2px solid var(--principal); outline-offset: 1px; }
 
 .boton, .boton-secundario { font: inherit; border-radius: 8px; padding: 10px 14px; cursor: pointer; }
-.boton { background: var(--azul); color: #fff; border: 0; font-weight: 600; }
+.boton { background: var(--principal); color: #fff; border: 0; font-weight: 600; }
 .boton:disabled { opacity: 0.6; cursor: default; }
 .boton-secundario { background: transparent; border: 1px solid var(--borde); color: var(--texto); }
 
 .barra { display: flex; align-items: center; gap: 16px; padding: 12px max(16px, 3vw); background: var(--tarjeta); border-bottom: 1px solid var(--borde); }
-.barra .marca { font-size: 1.2rem; color: var(--azul); margin-right: auto; }
+.barra .marca { display: flex; align-items: center; gap: 12px; margin-right: auto; }
+.barra .marca img { height: 30px; width: auto; display: block; }
+.barra .producto { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; color: var(--suave); border-left: 1px solid var(--borde); padding-left: 12px; }
+.logo-ingreso { display: block; width: auto; height: auto; max-width: 220px; max-height: 110px; margin: 0 auto 6px; }
+.formulario .titulo-ingreso { text-align: center; }
 .contenido { padding: 24px max(16px, 3vw); }
 
 .vacio { background: var(--tarjeta); border: 1px dashed var(--borde); border-radius: 12px; padding: 24px; }
@@ -43,8 +51,8 @@ th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--bo
 th { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--suave); }
 tr:last-child td { border-bottom: 0; }
 
-.etiqueta { background: #e8effc; color: var(--azul); border-radius: 999px; padding: 3px 10px; font-size: 0.8rem; font-weight: 600; }
+.etiqueta { background: var(--principal-suave); color: var(--principal); border-radius: 999px; padding: 3px 10px; font-size: 0.8rem; font-weight: 600; }
 .temp { border-radius: 999px; padding: 3px 10px; font-size: 0.8rem; font-weight: 600; }
-.temp-caliente { background: #fde9d6; color: #a65408; }
-.temp-tibio { background: #e8effc; color: var(--azul); }
+.temp-caliente { background: var(--acento-suave); color: var(--acento-oscuro); }
+.temp-tibio { background: var(--principal-suave); color: var(--principal); }
 .temp-frio { background: #eceef2; color: var(--suave); }

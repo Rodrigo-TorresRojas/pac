@@ -1,0 +1,11 @@
+{
+  "nombre": "PAC",
+  "producto": "PAC",
+  "descripcion": "Plataforma de Apoyo Comercial",
+  "colores": {
+    "principal": "#334155",
+    "acento": "#0EA5E9",
+    "texto": "#0F172A",
+    "fondo": "#F5F6F8"
+  }
+}

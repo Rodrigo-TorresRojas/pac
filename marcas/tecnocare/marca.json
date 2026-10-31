@@ -1,0 +1,11 @@
+{
+  "nombre": "TECNOCARE",
+  "producto": "PAC",
+  "descripcion": "Plataforma de Apoyo Comercial",
+  "colores": {
+    "principal": "#2F6FDB",
+    "acento": "#F28C28",
+    "texto": "#14213D",
+    "fondo": "#F4F6FB"
+  }
+}

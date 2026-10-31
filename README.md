@@ -6,6 +6,7 @@ CRM con IA para equipos de venta pequeños. Web en React + Vite, servidor en Nod
 apps/web       Panel (React + Vite)
 apps/server    Servidor y API (/api), sirve la web en producción
 supabase/      Migraciones de la base de datos y datos iniciales por cliente
+marcas/        Logo, colores y nombre de cada empresa (se elige con MARCA)
 ```
 
 ## Correrlo en tu computadora

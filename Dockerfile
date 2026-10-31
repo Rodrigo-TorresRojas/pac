@@ -6,10 +6,13 @@ COPY apps/web/package.json apps/web/package.json
 COPY apps/server/package.json apps/server/package.json
 RUN npm ci --no-audit --no-fund
 COPY apps apps
+COPY marcas marcas
 
 # Las variables VITE_ son públicas y se incrustan en la web al compilar.
 ARG VITE_SUPABASE_URL
 ARG VITE_SUPABASE_ANON_KEY
+# Carpeta de marcas/ que se usa (logo, colores, nombre).
+ARG MARCA=plantilla
 RUN test -n "$VITE_SUPABASE_URL" && test -n "$VITE_SUPABASE_ANON_KEY" \
     || (echo "Faltan los build args VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY" >&2; exit 1)
 RUN npm run build && npm prune --omit=dev --no-audit --no-fund
