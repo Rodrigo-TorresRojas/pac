@@ -126,7 +126,7 @@ export function Inicio() {
               {m.porEtapa.map((e) => (
                 <Link key={e.id} to={`/clientes?etapa=${e.id}`} className="barra-fila">
                   <span>{e.nombre}</span>
-                  <span className="barra-pista"><span className={`barra-relleno ${e.es_cierre ? "relleno-exito" : ""}`} style={{ width: `${(e.total / maxEtapa) * 100}%` }} /></span>
+                  <span className="barra-pista"><span className={`barra-relleno ${e.es_cierre ? "relleno-exito" : ""}`} style={{ width: `${(e.total / maxEtapa) * 100}%`, display: e.total ? undefined : "none" }} /></span>
                   <strong>{e.total}</strong>
                 </Link>
               ))}
@@ -185,7 +185,9 @@ export function Inicio() {
                 {m.sinPaso.length > 6 && <Link to="/clientes?sin_paso=1" className="ver-todo">Ver los {m.sinPaso.length} <ArrowRight size={14} /></Link>}
               </div>
               {m.sinPaso.length === 0 ? (
-                <div className="vacio-panel"><strong>Todos tienen un próximo paso</strong><span className="suave">Cada cliente en curso tiene un seguimiento programado.</span></div>
+                m.enCartera === 0
+                  ? <div className="vacio-panel"><strong>Sin clientes en curso</strong><span className="suave">Registra clientes con «Nuevo cliente» y aparecerán aquí si les falta un seguimiento.</span></div>
+                  : <div className="vacio-panel"><strong>Todos tienen un próximo paso</strong><span className="suave">Cada cliente en curso tiene un seguimiento programado.</span></div>
               ) : (
                 <ul className="lista">
                   {m.sinPaso.slice(0, 6).map((c) => (
@@ -202,13 +204,6 @@ export function Inicio() {
             </div>
           </section>
 
-          {clientes?.length === 0 && (
-            <div className="vacio">
-              <p><strong>Empieza registrando tu primer cliente.</strong></p>
-              <p className="suave">Las métricas de esta pantalla se llenan solas a medida que registras clientes y seguimientos.</p>
-              <button className="boton" onClick={() => navegar("/clientes?nuevo=1")}><Plus size={18} />Nuevo cliente</button>
-            </div>
-          )}
         </>
       )}
     </>
