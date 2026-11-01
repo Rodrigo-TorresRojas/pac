@@ -196,9 +196,17 @@ tr:last-child td { border-bottom: 0; }
 
 /* ---------- Reuniones ---------- */
 .reuniones { display: flex; flex-direction: column; gap: 14px; }
-.reunion { border: 1px solid var(--borde); border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; background: #fcfdfe; }
+.reunion { border: 1px solid var(--borde); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 12px; background: #fcfdfe; }
+.reunion.abierta { padding-bottom: 16px; }
+.reunion:not(.abierta):hover { border-color: color-mix(in srgb, var(--principal) 35%, var(--borde)); }
+.reunion-resumen-boton { flex: 1; min-width: 0; display: flex; align-items: flex-start; gap: 10px; background: none; border: 0; padding: 4px 0; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+.reunion-resumen-boton .temp, .reunion-resumen-boton .pendientes { flex: none; margin-top: 2px; }
+.reunion-flecha { flex: none; color: var(--suave); margin-top: 2px; transition: transform 0.15s; }
+.reunion-titulos { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.reunion-linea { font-size: 0.9rem; color: var(--texto); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
+.reunion-titulos .pequeño { white-space: normal; }
+.pendientes { background: var(--principal-suave); color: var(--principal); border-radius: 999px; padding: 3px 10px; font-size: 0.78rem; font-weight: 600; white-space: nowrap; }
 .reunion-cabecera { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
-.reunion-cabecera > div:first-child { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .reunion-acciones { display: flex; align-items: center; gap: 4px; color: var(--suave); flex-wrap: wrap; justify-content: flex-end; flex: none; max-width: 70%; }
 .confirmar { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--texto); flex-wrap: wrap; }
 .boton-chico { padding: 6px 12px; font-size: 0.82rem; gap: 6px; }
@@ -256,6 +264,9 @@ select:disabled { background: #f4f6f9; color: var(--suave); }
   .rejilla-paneles { grid-template-columns: 1fr; }
 }
 @media (max-width: 760px) {
+  .reunion-resumen-boton { flex-wrap: wrap; }
+  .reunion-titulos { flex-basis: calc(100% - 30px); }
+  .reunion-resumen-boton .temp { margin-left: 28px; }
   .app { grid-template-columns: 1fr; }
   .lateral { position: sticky; height: auto; z-index: 20; padding: 10px 16px; }
   .lateral-logo { flex: 0 1 auto; padding: 8px 12px; }

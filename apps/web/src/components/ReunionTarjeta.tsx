@@ -6,8 +6,9 @@ import { cuando, textoTemperatura } from "../lib/formato";
 const fechaHora = (iso: string) =>
   new Intl.DateTimeFormat("es-PE", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "America/Lima" }).format(new Date(iso));
 
-export function ReunionTarjeta({ reunion, analizando, temperaturaActual, telefono, productos, seguimientoCreado, onAnalizar, onAplicarTemperatura, onCrearSeguimiento, onEliminar }: {
+export function ReunionTarjeta({ reunion, abiertaInicial = false, analizando, temperaturaActual, telefono, productos, seguimientoCreado, onAnalizar, onAplicarTemperatura, onCrearSeguimiento, onEliminar }: {
   reunion: Reunion;
+  abiertaInicial?: boolean;
   analizando: boolean;
   temperaturaActual: T | null;
   telefono: string | null;
@@ -18,6 +19,7 @@ export function ReunionTarjeta({ reunion, analizando, temperaturaActual, telefon
   onCrearSeguimiento: (fecha: string, motivo: string) => void;
   onEliminar: () => void;
 }) {
+  const [abierta, setAbierta] = useState(abiertaInicial);
   const [verTexto, setVerTexto] = useState(false);
   const [confirmar, setConfirmar] = useState(false);
   const [copiado, setCopiado] = useState(false);
@@ -27,6 +29,9 @@ export function ReunionTarjeta({ reunion, analizando, temperaturaActual, telefon
   const wa = a?.borrador_whatsapp && digitos.length >= 9
     ? `https://wa.me/${digitos.length === 9 ? "51" + digitos : digitos}?text=${encodeURIComponent(a.borrador_whatsapp)}`
     : null;
+  const pendientes = (a?.temperatura_sugerida && a.temperatura_sugerida !== temperaturaActual ? 1 : 0)
+    + (a?.seguimiento_sugerido_fecha && !seguimientoCreado ? 1 : 0);
+  const mostrarCuerpo = abierta || analizando || reunion.estado_analisis === "error";
 
   async function copiar() {
     if (!a?.borrador_whatsapp) return;
@@ -34,14 +39,21 @@ export function ReunionTarjeta({ reunion, analizando, temperaturaActual, telefon
   }
 
   return (
-    <article className="reunion">
+    <article className={`reunion ${mostrarCuerpo ? "abierta" : ""}`}>
       <header className="reunion-cabecera">
-        <div>
-          <strong>{reunion.titulo || "Reunión"}</strong>
-          <span className="suave pequeño">
-            {fechaHora(reunion.fecha)}{reunion.duracion_min ? ` · ${reunion.duracion_min} min` : ""} · {reunion.granola_id ? "Granola" : "Registrada a mano"}
+        <button className="reunion-resumen-boton" onClick={() => setAbierta((v) => !v)} aria-expanded={mostrarCuerpo}>
+          <ChevronDown size={18} className={`reunion-flecha ${mostrarCuerpo ? "girado" : ""}`} />
+          <span className="reunion-titulos">
+            <strong>{reunion.titulo || "Reunión"}</strong>
+            <span className="suave pequeño">
+              {fechaHora(reunion.fecha)}{reunion.duracion_min ? ` · ${reunion.duracion_min} min` : ""} · {reunion.granola_id ? "Granola" : "Registrada a mano"}
+            </span>
+            {!mostrarCuerpo && a && <span className="reunion-linea">{a.resumen}</span>}
+            {!mostrarCuerpo && !a && <span className="reunion-linea suave">Sin análisis todavía</span>}
           </span>
-        </div>
+          {!mostrarCuerpo && a?.temperatura_sugerida && <span className={`temp temp-${a.temperatura_sugerida.toLowerCase()}`}>{textoTemperatura(a.temperatura_sugerida)}</span>}
+          {!mostrarCuerpo && pendientes > 0 && <span className="pendientes" title="Sugerencias sin aplicar">{pendientes} {pendientes === 1 ? "sugerencia" : "sugerencias"}</span>}
+        </button>
         <div className="reunion-acciones">
           {(reunion.transcripcion || reunion.resumen_granola) && !analizando && (
             <button className="icono-boton" onClick={onAnalizar} title="Analizar de nuevo" aria-label="Analizar de nuevo"><RefreshCw size={16} /></button>
@@ -58,6 +70,7 @@ export function ReunionTarjeta({ reunion, analizando, temperaturaActual, telefon
         </div>
       </header>
 
+      {mostrarCuerpo && <>
       {analizando && <p className="analizando"><Loader2 size={16} className="gira" />Analizando con IA…</p>}
       {!analizando && reunion.estado_analisis === "error" && (
         <div className="aviso" role="alert">
@@ -128,6 +141,7 @@ export function ReunionTarjeta({ reunion, analizando, temperaturaActual, telefon
           {verTexto && <div className="transcripcion">{reunion.transcripcion ?? reunion.resumen_granola}</div>}
         </>
       ) : a && <p className="suave pequeño">La transcripción se borró automáticamente a los 8 meses; el análisis se conserva.</p>}
+      </>}
     </article>
   );
 }

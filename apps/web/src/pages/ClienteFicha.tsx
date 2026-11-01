@@ -33,6 +33,7 @@ export function ClienteFicha() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [analizando, setAnalizando] = useState<Set<string>>(new Set());
   const [registrando, setRegistrando] = useState(false);
+  const [recienRegistrada, setRecienRegistrada] = useState<string | null>(null);
   const [estado, setEstado] = useState<"cargando" | "listo" | "no-existe" | "error">("cargando");
   const [editando, setEditando] = useState(false);
   const [aviso, setAviso] = useState<string | null>(null);
@@ -179,6 +180,7 @@ export function ClienteFicha() {
               <ReunionTarjeta
                 key={r.id}
                 reunion={r}
+                abiertaInicial={r.id === recienRegistrada}
                 analizando={analizando.has(r.id)}
                 temperaturaActual={cliente.temperatura}
                 telefono={cliente.telefono}
@@ -248,7 +250,7 @@ export function ClienteFicha() {
 
       {registrando && (
         <RegistrarReunion clienteId={cliente.id} onCerrar={() => setRegistrando(false)}
-          onGuardada={(rid) => { setRegistrando(false); void cargar().then(() => analizar(rid)); }} />
+          onGuardada={(rid) => { setRegistrando(false); setRecienRegistrada(rid); void cargar().then(() => analizar(rid)); }} />
       )}
 
       {editando && (
