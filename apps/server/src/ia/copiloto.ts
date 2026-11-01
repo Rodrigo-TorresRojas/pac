@@ -53,7 +53,7 @@ ${catalogo}
 
 Campos:
 - resumen: 2 a 4 oraciones sobre qué pasó y cuál es el interés real del cliente.
-- objeciones: lista corta (precio, ya tiene equipo, evidencia clínica, espacio, capacitación…). Vacía si no hubo.
+- objeciones: todo lo que frena o condiciona la compra, cada una en una frase corta: precio, ya tiene otro equipo, pide estudios o evidencia clínica, espacio, capacitación, y también si la decisión depende de otra persona (socio, gerente, directorio). Vacía si no hubo.
 - acuerdos: lo que quedó pactado, con fecha u hora si se mencionó. Vacío si no hubo.
 - recomendaciones: 1 a 3 acciones concretas para avanzar la venta, respondiendo a las objeciones.
 - temperatura_sugerida: Caliente (quiere comprar pronto), Tibio (interesado, evaluando) o Frio (poco interés).

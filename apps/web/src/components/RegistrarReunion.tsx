@@ -3,7 +3,7 @@ import { supabase } from "../lib/supabase";
 import { Modal } from "./Modal";
 
 const MINIMO = 40;
-const MAXIMO = 60_000;
+const MAXIMO = 200_000;
 
 /** Fecha y hora local para <input type="datetime-local">. */
 function ahoraLocal(): string {
@@ -54,7 +54,7 @@ export function RegistrarReunion({ clienteId, onCerrar, onGuardada }: {
           </label>
           <p className="suave ayuda">
             Al guardar, la IA la analiza y te sugiere temperatura, próximo seguimiento y un mensaje de WhatsApp.
-            Antes de enviarla se ocultan teléfonos, correos y DNI. {texto.length > 1000 && <>({texto.length.toLocaleString("es-PE")} / 60 000 caracteres)</>}
+            Antes de enviarla se ocultan teléfonos, correos y DNI. {texto.length > 1000 && <>({texto.length.toLocaleString("es-PE")} / 200 000 caracteres)</>}
           </p>
           {error && <p className="error" role="alert">{error}</p>}
         </div>
