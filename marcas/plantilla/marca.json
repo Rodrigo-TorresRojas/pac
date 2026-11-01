@@ -12,5 +12,19 @@
     "pais": "Perú",
     "departamento": "Lima",
     "provincia": "Lima"
+  },
+  "ozonar": {
+    "tamano_lote": 15,
+    "exploracion": 4,
+    "busquedas": [
+      "clínica",
+      "consultorio médico"
+    ],
+    "zonas": [
+      {
+        "zona": "Lima",
+        "peso": 100
+      }
+    ]
   }
 }

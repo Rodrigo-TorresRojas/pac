@@ -13,4 +13,6 @@ Para una empresa nueva, copia `plantilla/` con el nombre de la empresa y reempla
 | `logo-horizontal-blanco.svg` | Igual, con el nombre en blanco, para fondos oscuros |
 | `nombre.svg` | Solo el nombre |
 
+En `marca.json`, la sección `ozonar` define el prospectador: tamaño del lote mensual, cuántos son de exploración, qué buscar en Google Maps (`busquedas`) y dónde (`zonas`, con un `peso` relativo).
+
 Colores: `principal` (botones y enlaces), `acento` (destacados, por ejemplo clientes calientes), `texto` y `fondo`.

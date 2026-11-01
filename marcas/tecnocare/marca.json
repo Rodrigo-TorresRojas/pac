@@ -12,5 +12,69 @@
     "pais": "Perú",
     "departamento": "Lima",
     "provincia": "Lima"
+  },
+  "ozonar": {
+    "tamano_lote": 15,
+    "exploracion": 4,
+    "busquedas": [
+      "centro de rehabilitación y fisioterapia",
+      "clínica del dolor",
+      "clínica de traumatología",
+      "clínica odontológica",
+      "consultorio ginecológico",
+      "clínica veterinaria",
+      "clínica dermatológica",
+      "centro de medicina estética"
+    ],
+    "zonas": [
+      {
+        "zona": "Miraflores, Lima",
+        "peso": 10
+      },
+      {
+        "zona": "San Isidro, Lima",
+        "peso": 10
+      },
+      {
+        "zona": "Santiago de Surco, Lima",
+        "peso": 10
+      },
+      {
+        "zona": "San Borja, Lima",
+        "peso": 10
+      },
+      {
+        "zona": "La Molina, Lima",
+        "peso": 10
+      },
+      {
+        "zona": "Jesús María, Lima",
+        "peso": 10
+      },
+      {
+        "zona": "Los Olivos, Lima",
+        "peso": 10
+      },
+      {
+        "zona": "Lince, Lima",
+        "peso": 10
+      },
+      {
+        "zona": "Arequipa",
+        "peso": 5
+      },
+      {
+        "zona": "Trujillo",
+        "peso": 5
+      },
+      {
+        "zona": "Chiclayo",
+        "peso": 5
+      },
+      {
+        "zona": "Piura",
+        "peso": 5
+      }
+    ]
   }
 }

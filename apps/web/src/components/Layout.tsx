@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import { Home, LogOut, Menu, Users } from "lucide-react";
+import { Home, LogOut, Menu, Radar, Users } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { marca } from "../lib/marca";
 import { useSesion } from "../lib/sesion";
@@ -11,6 +11,7 @@ import { contarPorAsignar, EVENTO_BANDEJA, sincronizarGranola } from "../lib/ban
 const SECCIONES = [
   { a: "/", texto: "Inicio", icono: Home },
   { a: "/clientes", texto: "Clientes", icono: Users },
+  { a: "/ozonar", texto: "Ozonar", icono: Radar },
 ];
 
 export function Layout() {
