@@ -4,6 +4,7 @@ import { Home, LogOut, Menu, Users } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { marca } from "../lib/marca";
 import { useSesion } from "../lib/sesion";
+import { Asistente } from "./Asistente";
 import { contarPorAsignar, EVENTO_BANDEJA, sincronizarGranola } from "../lib/bandeja";
 
 // Solo las secciones que ya funcionan. Las demás se agregan cuando existan.
@@ -64,6 +65,7 @@ export function Layout() {
         </div>
       </aside>
       <main className="contenido"><Outlet /></main>
+      <Asistente />
     </div>
   );
 }

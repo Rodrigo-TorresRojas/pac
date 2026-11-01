@@ -42,6 +42,11 @@ export function Clientes() {
   }, []);
 
   useEffect(() => { void cargar(); }, [cargar]);
+  useEffect(() => {
+    const recargar = () => void cargar();
+    window.addEventListener("pac:datos", recargar); // el Asistente cambió algo
+    return () => window.removeEventListener("pac:datos", recargar);
+  }, [cargar]);
 
   const cierre = useMemo(() => new Set(etapas.filter((e) => e.es_cierre).map((e) => e.id)), [etapas]);
 

@@ -64,6 +64,11 @@ export function ClienteFicha() {
   }, [id]);
 
   useEffect(() => { setEstado("cargando"); void cargar(); }, [cargar]);
+  useEffect(() => {
+    const recargar = () => void cargar();
+    window.addEventListener("pac:datos", recargar); // el Asistente cambió algo
+    return () => window.removeEventListener("pac:datos", recargar);
+  }, [cargar]);
 
   async function actualizar(cambios: Partial<Cliente>, mensaje?: string) {
     if (!cliente) return;

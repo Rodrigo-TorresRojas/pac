@@ -16,6 +16,12 @@ export function gemini(): GoogleGenAI {
 
 export const MODELOS = [...new Set([PRINCIPAL, RESPALDO])];
 
+// El Asistente conversa y consulta datos (usa herramientas): conviene un modelo más capaz que Flash-Lite.
+export const MODELOS_ASISTENTE = [...new Set([
+  process.env.GEMINI_MODEL_ASISTENTE?.trim() || "gemini-3.8-flash",
+  process.env.GEMINI_MODEL_ASISTENTE_RESPALDO?.trim() || "gemini-3.6-flash",
+])];
+
 /** Estado HTTP del error de Gemini, si lo trae. */
 export function estadoDeError(error: unknown): number | undefined {
   const e = error as { status?: number; code?: number };
