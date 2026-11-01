@@ -24,6 +24,7 @@ export function Inicio() {
   const [clientes, setClientes] = useState<ClienteResumen[] | null>(null);
   const [etapas, setEtapas] = useState<Etapa[]>([]);
   const [pendientes, setPendientes] = useState<Pendiente[]>([]);
+  const [proximos, setProximos] = useState<Pendiente[]>([]);
   const [hechosMes, setHechosMes] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [porAsignar, setPorAsignar] = useState(0);
@@ -35,19 +36,22 @@ export function Inicio() {
   }, []);
 
   const cargar = useCallback(async () => {
-    const [c, e, p, h] = await Promise.all([
+    const [c, e, p, h, x] = await Promise.all([
       supabase.from("clientes_resumen").select("*").limit(5000),
       supabase.from("etapas").select("id,nombre,orden,es_cierre").eq("activa", true).order("orden"),
       supabase.from("seguimientos").select("id,fecha,motivo,cliente_id,clientes(nombre,institucion)")
         .eq("hecho", false).lte("fecha", hoy()).order("fecha").limit(30),
       supabase.from("seguimientos").select("id", { count: "exact", head: true })
         .eq("hecho", true).gte("completado_at", inicioDeMes()),
+      supabase.from("seguimientos").select("id,fecha,motivo,cliente_id,clientes(nombre,institucion)")
+        .eq("hecho", false).gt("fecha", hoy()).order("fecha").limit(8),
     ]);
     if (c.error || e.error || p.error) return setError("No se pudieron cargar los datos. Revisa tu conexión.");
     setClientes(c.data as ClienteResumen[]);
     setEtapas(e.data as Etapa[]);
     setPendientes(p.data as unknown as Pendiente[]);
     setHechosMes(h.count ?? 0);
+    setProximos((x.data ?? []) as unknown as Pendiente[]);
   }, []);
 
   useEffect(() => { void cargar(); }, [cargar]);
@@ -84,6 +88,7 @@ export function Inicio() {
 
   async function completar(id: string) {
     setPendientes((p) => p.filter((s) => s.id !== id));
+    setProximos((p) => p.filter((s) => s.id !== id));
     setHechosMes((n) => n + 1);
     await supabase.from("seguimientos").update({ hecho: true }).eq("id", id);
     void cargar();
@@ -179,9 +184,10 @@ export function Inicio() {
             <div className="panel" id="para-hoy">
               <div className="panel-cabecera">
                 <h2 className="panel-titulo">Para hoy</h2>
+                <Link to="/agenda" className="ver-todo">Agenda <ArrowRight size={14} /></Link>
               </div>
               {pendientes.length === 0 ? (
-                <div className="vacio-panel"><strong>Nada pendiente para hoy</strong><span className="suave">Los seguimientos se programan desde la ficha de cada cliente.</span></div>
+                <div className="vacio-panel"><strong>Nada pendiente para hoy</strong><span className="suave">Programa seguimientos desde la ficha de cada cliente o en la Agenda.</span></div>
               ) : (
                 <ul className="lista">
                   {pendientes.map((s) => (
@@ -199,28 +205,48 @@ export function Inicio() {
             </div>
             <div className="panel">
               <div className="panel-cabecera">
-                <h2 className="panel-titulo">Sin próximo paso</h2>
-                {m.sinPaso.length > 6 && <Link to="/clientes?sin_paso=1" className="ver-todo">Ver los {m.sinPaso.length} <ArrowRight size={14} /></Link>}
+                <h2 className="panel-titulo">Próximos</h2>
+                <Link to="/agenda" className="ver-todo">Ver todos <ArrowRight size={14} /></Link>
               </div>
-              {m.sinPaso.length === 0 ? (
-                m.enCartera === 0
-                  ? <div className="vacio-panel"><strong>Sin clientes en curso</strong><span className="suave">Registra clientes con «Nuevo cliente» y aparecerán aquí si les falta un seguimiento.</span></div>
-                  : <div className="vacio-panel"><strong>Todos tienen un próximo paso</strong><span className="suave">Cada cliente en curso tiene un seguimiento programado.</span></div>
+              {proximos.length === 0 ? (
+                <div className="vacio-panel"><strong>Sin actividades programadas</strong><span className="suave">Aquí aparecen tus próximas llamadas, demos y envíos.</span></div>
               ) : (
                 <ul className="lista">
-                  {m.sinPaso.slice(0, 6).map((c) => (
-                    <li key={c.id} className="lista-fila">
-                      <Link to={`/clientes/${c.id}`} className="lista-texto">
-                        <strong>{nombreVisible(c)}</strong>
-                        <span className="suave">{c.etapa}{subtitulo(c) ? ` · ${subtitulo(c)}` : ""}</span>
+                  {proximos.map((s) => (
+                    <li key={s.id} className="lista-fila">
+                      <button className="check" onClick={() => void completar(s.id)} aria-label="Marcar como hecho" title="Marcar como hecho"><Check size={14} /></button>
+                      <Link to={`/clientes/${s.cliente_id}`} className="lista-texto">
+                        <strong>{s.clientes ? nombreVisible(s.clientes) : "Cliente"}</strong>
+                        <span className="suave">{s.motivo}</span>
                       </Link>
-                      <Temperatura valor={c.temperatura} />
+                      <span className={"suave pequeño"}>{cuando(s.fecha)}</span>
                     </li>
                   ))}
                 </ul>
               )}
             </div>
           </section>
+
+          {m.sinPaso.length > 0 && (
+            <section className="panel">
+              <div className="panel-cabecera">
+                <h2 className="panel-titulo tono-alerta">Sin próximo paso · {m.sinPaso.length}</h2>
+                {m.sinPaso.length > 6 && <Link to="/clientes?sin_paso=1" className="ver-todo">Ver los {m.sinPaso.length} <ArrowRight size={14} /></Link>}
+              </div>
+              <p className="suave nota-arriba">Clientes en curso sin ninguna actividad programada: corren el riesgo de enfriarse.</p>
+              <ul className="lista lista-2col">
+                {m.sinPaso.slice(0, 6).map((c) => (
+                  <li key={c.id} className="lista-fila">
+                    <Link to={`/clientes/${c.id}`} className="lista-texto">
+                      <strong>{nombreVisible(c)}</strong>
+                      <span className="suave">{c.etapa}{subtitulo(c) ? ` · ${subtitulo(c)}` : ""}</span>
+                    </Link>
+                    <Temperatura valor={c.temperatura} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
         </>
       )}
