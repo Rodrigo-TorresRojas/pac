@@ -20,6 +20,7 @@ export const MODELOS = [...new Set([PRINCIPAL, RESPALDO])];
 export const MODELOS_ASISTENTE = [...new Set([
   process.env.GEMINI_MODEL_ASISTENTE?.trim() || "gemini-3.8-flash",
   process.env.GEMINI_MODEL_ASISTENTE_RESPALDO?.trim() || "gemini-3.6-flash",
+  PRINCIPAL, // último recurso: el modelo del copiloto (suele ser Flash-Lite, con cupo aparte)
 ])];
 
 /** Estado HTTP del error de Gemini, si lo trae. */
@@ -39,7 +40,8 @@ export function mensajeDeError(error: unknown): string {
   if (error instanceof ErrorHttp) return error.message;
   const s = estadoDeError(error);
   if (s === 400 || s === 401 || s === 403) return "La clave de Gemini no es válida o no tiene permisos.";
-  if (s === 429) return "La IA está saturada o se acabó el saldo de Gemini. Inténtalo en unos minutos.";
+  if (s === 402) return "Se acabó el saldo prepagado de Gemini. Recarga en Google AI Studio.";
+  if (s === 429) return "Se alcanzó el límite de uso de Gemini (en el plan gratuito es bajo; con facturación activa es mucho mayor). Inténtalo en un minuto.";
   if (s && s >= 500) return "La IA no está disponible en este momento. Inténtalo en unos minutos.";
   return "No se pudo analizar la reunión. Inténtalo de nuevo.";
 }

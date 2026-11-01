@@ -26,14 +26,14 @@ const SUGERENCIAS = [
   "¿Cómo asigno una reunión de Granola?",
 ];
 
-/** Negritas y enlaces internos: **texto** y [Nombre](/clientes/id). */
+/** Negritas, cursivas y enlaces internos: **texto**, *texto* y [Nombre](/clientes/id). */
 function enLinea(texto: string): ReactNode[] {
   const partes: ReactNode[] = [];
-  const re = /\*\*(.+?)\*\*|\[([^\]]+)\]\((\/[^)\s]*)\)/g;
+  const re = /\*\*(.+?)\*\*|\[([^\]]+)\]\((\/[^)\s]*)\)|\*([^*\s][^*]*?)\*/g;
   let i = 0, m: RegExpExecArray | null, k = 0;
   while ((m = re.exec(texto))) {
     if (m.index > i) partes.push(texto.slice(i, m.index));
-    partes.push(m[1] ? <strong key={k++}>{m[1]}</strong> : <Link key={k++} to={m[3]}>{m[2]}</Link>);
+    partes.push(m[1] ? <strong key={k++}>{m[1]}</strong> : m[4] ? <em key={k++}>{m[4]}</em> : <Link key={k++} to={m[3]}>{m[2]}</Link>);
     i = m.index + m[0].length;
   }
   if (i < texto.length) partes.push(texto.slice(i));
