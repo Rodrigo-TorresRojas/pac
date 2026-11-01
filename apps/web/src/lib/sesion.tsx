@@ -8,7 +8,7 @@ export interface Usuario {
   rol: "admin" | "vendedor";
 }
 
-export const SesionContexto = createContext<{ session: Session; usuario: Usuario } | null>(null);
+export const SesionContexto = createContext<{ session: Session; usuario: Usuario; recargarUsuario: () => void } | null>(null);
 
 export function useSesion() {
   const s = useContext(SesionContexto);

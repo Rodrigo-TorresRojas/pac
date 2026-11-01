@@ -6,6 +6,7 @@ import { reuniones } from "./rutas/reuniones.js";
 import { granola } from "./rutas/granola.js";
 import { asistente } from "./rutas/asistente.js";
 import { ozonar } from "./rutas/ozonar.js";
+import { equipo } from "./rutas/equipo.js";
 
 /**
  * Servidor de PAC.
@@ -23,6 +24,7 @@ app.use("/api", reuniones);
 app.use("/api", granola);
 app.use("/api", asistente);
 app.use("/api", ozonar);
+app.use("/api", equipo);
 
 // Cualquier otra ruta /api que no exista
 app.use("/api", (_req, res) => {

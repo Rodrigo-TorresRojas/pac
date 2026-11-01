@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import { Home, LogOut, Menu, Radar, Users } from "lucide-react";
+import { CalendarCheck, Home, LogOut, Menu, Radar, ShieldCheck, Users } from "lucide-react";
+import { MiCuenta } from "./MiCuenta";
 import { supabase } from "../lib/supabase";
 import { marca } from "../lib/marca";
 import { useSesion } from "../lib/sesion";
@@ -11,12 +12,15 @@ import { contarPorAsignar, EVENTO_BANDEJA, sincronizarGranola } from "../lib/ban
 const SECCIONES = [
   { a: "/", texto: "Inicio", icono: Home },
   { a: "/clientes", texto: "Clientes", icono: Users },
+  { a: "/agenda", texto: "Agenda", icono: CalendarCheck },
   { a: "/ozonar", texto: "Ozonar", icono: Radar },
 ];
 
 export function Layout() {
   const { usuario } = useSesion();
   const [abierto, setAbierto] = useState(false);
+  const [cuenta, setCuenta] = useState(false);
+  const secciones = usuario.rol === "admin" ? [...SECCIONES, { a: "/equipo", texto: "Equipo", icono: ShieldCheck }] : SECCIONES;
   const { pathname } = useLocation();
   const [ultimaRuta, setUltimaRuta] = useState(pathname);
   if (pathname !== ultimaRuta) { setUltimaRuta(pathname); setAbierto(false); }
@@ -50,7 +54,7 @@ export function Layout() {
           <button className="icono-boton menu-movil" onClick={() => setAbierto((v) => !v)} aria-label="Menú"><Menu size={20} />{porAsignar > 0 && <span className="punto-alerta" />}</button>
         </div>
         <nav className="lateral-menu">
-          {SECCIONES.map(({ a, texto, icono: Icono }) => (
+          {secciones.map(({ a, texto, icono: Icono }) => (
             <NavLink key={a} to={a} end={a === "/"} className="lateral-enlace">
               <Icono size={18} />{texto}
               {a === "/clientes" && porAsignar > 0 && <span className="contador" title={`${porAsignar} reuniones por asignar`}>{porAsignar}</span>}
@@ -58,15 +62,16 @@ export function Layout() {
           ))}
         </nav>
         <div className="lateral-pie">
-          <div className="lateral-usuario">
+          <button className="lateral-usuario" onClick={() => setCuenta(true)} title="Mi cuenta">
             <strong>{usuario.nombre}</strong>
             <span>{usuario.email}</span>
-          </div>
+          </button>
           <button className="lateral-enlace" onClick={() => supabase.auth.signOut()}><LogOut size={18} />Cerrar sesión</button>
         </div>
       </aside>
       <main className="contenido"><Outlet /></main>
       <Asistente />
+      {cuenta && <MiCuenta onCerrar={() => setCuenta(false)} />}
     </div>
   );
 }

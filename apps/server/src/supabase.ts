@@ -30,3 +30,13 @@ export async function clienteDeUsuario(autorizacion: string | undefined): Promis
   if (error || !data.user) throw new ErrorHttp(401, "Tu sesión venció. Inicia sesión de nuevo.");
   return { sb, usuarioId: data.user.id };
 }
+
+/**
+ * Cliente con la clave de servicio: SOLO para administrar cuentas (crear, cambiar correo,
+ * contraseña o eliminar usuarios). Nunca se usa para leer datos del CRM.
+ */
+export function clienteServicio(): SupabaseClient {
+  const clave = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+  if (!URL_SUPABASE || !clave) throw new ErrorHttp(503, "Falta la clave de servicio de Supabase (SUPABASE_SERVICE_ROLE_KEY) en el servidor.");
+  return createClient(URL_SUPABASE, clave, { auth: { persistSession: false, autoRefreshToken: false } });
+}

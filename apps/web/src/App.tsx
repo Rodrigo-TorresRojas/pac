@@ -9,6 +9,8 @@ import { Clientes } from "./pages/Clientes";
 import { ClienteFicha } from "./pages/ClienteFicha";
 import { Bandeja } from "./pages/Bandeja";
 import { Ozonar } from "./pages/Ozonar";
+import { Equipo } from "./pages/Equipo";
+import { Agenda } from "./pages/Agenda";
 import { Layout } from "./components/Layout";
 
 export function App() {
@@ -16,6 +18,7 @@ export function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [cargando, setCargando] = useState(true);
   const [sinAcceso, setSinAcceso] = useState(false);
+  const [version, setVersion] = useState(0);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -38,7 +41,7 @@ export function App() {
       }
       setCargando(false);
     });
-  }, [idUsuario]);
+  }, [idUsuario, version]);
 
   if (!supabaseConfigurado) {
     return (
@@ -67,7 +70,7 @@ export function App() {
   }
 
   return (
-    <SesionContexto.Provider value={{ session, usuario }}>
+    <SesionContexto.Provider value={{ session, usuario, recargarUsuario: () => setVersion((v) => v + 1) }}>
       <BrowserRouter>
         <Routes>
           <Route element={<Layout />}>
@@ -76,6 +79,8 @@ export function App() {
             <Route path="clientes/bandeja" element={<Bandeja />} />
             <Route path="clientes/:id" element={<ClienteFicha />} />
             <Route path="ozonar" element={<Ozonar />} />
+            <Route path="agenda" element={<Agenda />} />
+            <Route path="equipo" element={usuario.rol === "admin" ? <Equipo /> : <Navigate to="/" replace />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
