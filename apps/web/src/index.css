@@ -78,7 +78,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid color-mix(in srgb
 .lateral-pie { margin-top: auto; border-top: 1px solid rgba(255, 255, 255, 0.12); padding-top: 14px; display: flex; flex-direction: column; gap: 6px; }
 .lateral-usuario { display: flex; flex-direction: column; padding: 0 14px 6px; font-size: 0.85rem; overflow: hidden; }
 .lateral-usuario span { color: rgba(255, 255, 255, 0.6); font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; }
-.contenido { padding: 32px clamp(16px, 3vw, 40px) 48px; display: flex; flex-direction: column; gap: 20px; min-width: 0; max-width: 1280px; width: 100%; }
+.contenido { padding: 32px clamp(16px, 3vw, 40px) 48px; display: flex; flex-direction: column; gap: 20px; min-width: 0; max-width: 1680px; width: 100%; margin-inline: auto; }
 
 .pagina-cabecera { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .pagina-cabecera .suave { margin-bottom: 4px; }
@@ -157,6 +157,12 @@ tr:last-child td { border-bottom: 0; }
 .tabla-clic tbody tr { cursor: pointer; }
 .tabla-clic tbody tr:hover { background: #f8fafd; }
 .tabla-clic tbody tr:focus-visible { outline: 2px solid var(--principal); outline-offset: -2px; }
+.tarjetas-clientes { display: none; list-style: none; margin: 0; padding: 0; flex-direction: column; gap: 10px; }
+.tarjeta-cliente { display: flex; flex-direction: column; gap: 4px; background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 14px; padding: 14px 16px; color: var(--texto); box-shadow: var(--sombra); }
+.tarjeta-cliente:hover { text-decoration: none; border-color: var(--principal); }
+.tc-cabecera { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.tc-pie { display: flex; align-items: center; gap: 10px; margin-top: 6px; font-size: 0.85rem; min-width: 0; }
+.tc-pie .recorte { max-width: none; flex: 1; min-width: 0; }
 .recorte { max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .etiqueta { background: var(--principal-suave); color: var(--principal); border-radius: 999px; padding: 3px 10px; font-size: 0.8rem; font-weight: 600; white-space: nowrap; }
@@ -190,11 +196,12 @@ tr:last-child td { border-bottom: 0; }
 
 /* ---------- Ventana emergente ---------- */
 .modal-fondo { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); display: grid; place-items: center; padding: 16px; z-index: 50; animation: aparecer 0.15s ease-out; }
-.modal { background: #fff; border-radius: 16px; width: 100%; max-width: 620px; max-height: calc(100vh - 32px); overflow-y: auto; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25); }
-.modal-cabecera { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid var(--borde); position: sticky; top: 0; background: #fff; z-index: 1; }
+.modal { background: #fff; border-radius: 16px; width: 100%; max-width: 640px; max-height: calc(100dvh - 32px); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25); }
+.modal-cabecera { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; border-bottom: 1px solid var(--borde); flex: none; }
+.modal-form { display: flex; flex-direction: column; min-height: 0; flex: 1; }
 .modal-cabecera h2 { font-size: 1.15rem; }
-.modal-cuerpo { padding: 18px 22px 22px; }
-.modal-pie { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+.modal-cuerpo { padding: 18px 22px 22px; overflow-y: auto; flex: 1; min-height: 0; }
+.modal-pie { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 22px; border-top: 1px solid var(--borde); background: #fff; flex: none; }
 .ayuda { font-size: 0.85rem; }
 .ubicacion { border: 1px solid var(--borde); border-radius: 12px; padding: 12px 14px 14px; margin: 0; }
 .ubicacion legend { font-size: 0.88rem; font-weight: 600; padding: 0 6px; }
@@ -205,6 +212,10 @@ select:disabled { background: #f4f6f9; color: var(--suave); }
 .aviso svg { flex: none; margin-top: 2px; }
 .aviso ul { margin: 6px 0; padding-left: 18px; }
 @keyframes aparecer { from { opacity: 0; } }
+
+/* ---------- Pantallas grandes: todo un poco más grande ---------- */
+@media (min-width: 1800px) { :root { font-size: 17px; } .app { grid-template-columns: 272px 1fr; } }
+@media (min-width: 2300px) { :root { font-size: 19px; } .app { grid-template-columns: 300px 1fr; } .contenido { max-width: 1900px; } }
 
 /* ---------- Pantallas angostas ---------- */
 @media (max-width: 1000px) {
@@ -230,5 +241,16 @@ select:disabled { background: #f4f6f9; color: var(--suave); }
   .seg-nuevo input:nth-child(2) { grid-column: 1 / -1; grid-row: 1; }
   .rejilla-2 { grid-template-columns: 1fr; }
   .leyenda { grid-template-columns: 1fr; }
-  .buscador { max-width: none; }
+  .buscador { max-width: none; flex-basis: 100%; }
+  .tabla-envoltura { display: none; }
+  .tarjetas-clientes { display: flex; }
+  .pagina-cabecera { align-items: center; }
+  .modal-fondo { padding: 0; place-items: end stretch; }
+  .modal { max-width: none; max-height: 92dvh; border-radius: 18px 18px 0 0; }
+  .modal-cuerpo, .modal-pie, .modal-cabecera { padding-left: 16px; padding-right: 16px; }
+  .modal-pie .boton, .modal-pie .boton-secundario { flex: 1; }
+}
+@media (max-height: 640px) and (min-width: 761px) {
+  .lateral-menu { margin-top: 12px; }
+  .lateral-enlace { padding: 8px 14px; }
 }

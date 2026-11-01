@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Plus, Search } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import type { ClienteResumen, Etapa } from "../lib/tipos";
@@ -135,6 +135,27 @@ export function Clientes() {
             </tbody>
           </table>
         </div>
+      )}
+      {visibles.length > 0 && (
+        <ul className="tarjetas-clientes">
+          {visibles.map((c) => (
+            <li key={c.id}>
+              <Link to={`/clientes/${c.id}`} className="tarjeta-cliente">
+                <div className="tc-cabecera">
+                  <strong>{nombreVisible(c)}</strong>
+                  <Temperatura valor={c.temperatura} />
+                </div>
+                {subtitulo(c) && <span className="suave">{subtitulo(c)}</span>}
+                <div className="tc-pie">
+                  <span className={`etiqueta ${cierre.has(c.etapa_id) ? "etiqueta-exito" : ""}`}>{c.etapa}</span>
+                  {c.proximo_seguimiento_fecha ? (
+                    <span className={`recorte ${diasHasta(c.proximo_seguimiento_fecha) < 0 ? "tono-alerta" : "suave"}`}>{cuando(c.proximo_seguimiento_fecha)} · {c.proximo_seguimiento_motivo}</span>
+                  ) : !cierre.has(c.etapa_id) && <span className="tono-alerta">Sin próximo paso</span>}
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
       )}
       {visibles.length > 0 && <p className="suave nota">{visibles.length} {visibles.length === 1 ? "cliente" : "clientes"}</p>}
 

@@ -80,7 +80,8 @@ export function ClienteFormulario({ cliente, onCerrar, onGuardado }: {
 
   return (
     <Modal titulo={cliente ? "Editar cliente" : "Nuevo cliente"} onCerrar={onCerrar}>
-      <form className="modal-cuerpo formulario" onSubmit={guardar} noValidate>
+      <form className="modal-form" onSubmit={guardar} noValidate>
+        <div className="modal-cuerpo formulario">
         <p className="suave ayuda">Basta con el nombre de la persona <strong>o</strong> de la institución, y un teléfono <strong>o</strong> correo.</p>
         <div className="rejilla-2">
           <label>Persona de contacto<input value={campos.nombre ?? ""} onChange={poner("nombre")} placeholder="Dra. Ana Torres" /></label>
@@ -123,6 +124,7 @@ export function ClienteFormulario({ cliente, onCerrar, onGuardado }: {
         )}
         {error && <p className="error" role="alert">{error}</p>}
 
+        </div>
         <footer className="modal-pie">
           <button type="button" className="boton-secundario" onClick={onCerrar}>Cancelar</button>
           <button className="boton" disabled={guardando}>
