@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Check, MessageCircle, Pencil, Power, RotateCcw } from "lucide-react";
+import { ArrowLeft, Check, MessageCircle, Pencil, Plus, Power, RotateCcw } from "lucide-react";
 import { supabase } from "../lib/supabase";
-import type { Cliente, Etapa, Seguimiento, Temperatura as T } from "../lib/tipos";
+import type { Cliente, Etapa, Producto, Reunion, Seguimiento, Temperatura as T } from "../lib/tipos";
+import { api } from "../lib/api";
+import { ReunionTarjeta } from "../components/ReunionTarjeta";
+import { RegistrarReunion } from "../components/RegistrarReunion";
 import { cuando, diasHasta, enlaceWhatsapp, fechaCorta, hoy, nombreVisible, subtitulo, TEMPERATURAS, textoTemperatura } from "../lib/formato";
 import { ClienteFormulario } from "../components/ClienteFormulario";
 import { textoUbicacion } from "../components/UbicacionCampos";
@@ -26,19 +29,27 @@ export function ClienteFicha() {
   const [etapas, setEtapas] = useState<Etapa[]>([]);
   const [seguimientos, setSeguimientos] = useState<Seguimiento[]>([]);
   const [historial, setHistorial] = useState<Movimiento[]>([]);
+  const [reuniones, setReuniones] = useState<Reunion[]>([]);
+  const [productos, setProductos] = useState<Producto[]>([]);
+  const [analizando, setAnalizando] = useState<Set<string>>(new Set());
+  const [registrando, setRegistrando] = useState(false);
   const [estado, setEstado] = useState<"cargando" | "listo" | "no-existe" | "error">("cargando");
   const [editando, setEditando] = useState(false);
   const [aviso, setAviso] = useState<string | null>(null);
   const [nuevoSeg, setNuevoSeg] = useState({ fecha: manana(), motivo: "" });
 
   const cargar = useCallback(async () => {
-    const [c, e, s, h] = await Promise.all([
+    const [c, e, s, h, r, p] = await Promise.all([
       supabase.from("clientes").select("*").eq("id", id).maybeSingle(),
       supabase.from("etapas").select("id,nombre,orden,es_cierre").eq("activa", true).order("orden"),
-      supabase.from("seguimientos").select("id,cliente_id,fecha,motivo,hecho,completado_at").eq("cliente_id", id).order("fecha"),
+      supabase.from("seguimientos").select("id,cliente_id,reunion_id,fecha,motivo,hecho,completado_at").eq("cliente_id", id).order("fecha"),
       supabase.from("historial_etapas")
         .select("id,created_at,anterior:etapas!historial_etapas_etapa_anterior_id_fkey(nombre),nueva:etapas!historial_etapas_etapa_nueva_id_fkey(nombre)")
         .eq("cliente_id", id).order("created_at", { ascending: false }).limit(20),
+      supabase.from("reuniones")
+        .select("id,cliente_id,fecha,titulo,duracion_min,asistentes,resumen_granola,transcripcion,granola_id,estado_analisis,error_analisis,analisis(*)")
+        .eq("cliente_id", id).order("fecha", { ascending: false }).limit(50),
+      supabase.from("productos").select("id,nombre").order("nombre"),
     ]);
     if (c.error || e.error || s.error) return setEstado("error");
     if (!c.data) return setEstado("no-existe");
@@ -46,6 +57,8 @@ export function ClienteFicha() {
     setEtapas(e.data as Etapa[]);
     setSeguimientos(s.data as Seguimiento[]);
     setHistorial((h.data ?? []) as unknown as Movimiento[]);
+    setReuniones((r.data ?? []) as Reunion[]);
+    setProductos((p.data ?? []) as Producto[]);
     setEstado("listo");
   }, [id]);
 
@@ -65,6 +78,30 @@ export function ClienteFicha() {
     const { error } = await supabase.from("seguimientos").insert({ cliente_id: id, fecha: nuevoSeg.fecha, motivo: nuevoSeg.motivo.trim() });
     if (error) return setAviso("No se pudo agregar el seguimiento.");
     setNuevoSeg({ fecha: manana(), motivo: "" });
+    void cargar();
+  }
+
+  async function analizar(reunionId: string) {
+    setAnalizando((a) => new Set(a).add(reunionId));
+    try {
+      await api(`/reuniones/${reunionId}/analizar`);
+    } catch (err) {
+      setAviso((err as Error).message);
+    }
+    setAnalizando((a) => { const n = new Set(a); n.delete(reunionId); return n; });
+    void cargar();
+  }
+
+  async function eliminarReunion(reunionId: string) {
+    setReuniones((lista) => lista.filter((x) => x.id !== reunionId));
+    const { error } = await supabase.from("reuniones").delete().eq("id", reunionId);
+    setAviso(error ? "No se pudo eliminar la reunión." : "Reunión eliminada.");
+    void cargar();
+  }
+
+  async function crearSeguimientoSugerido(reunionId: string, fecha: string, motivo: string) {
+    const { error } = await supabase.from("seguimientos").insert({ cliente_id: id, reunion_id: reunionId, fecha, motivo });
+    setAviso(error ? "No se pudo crear el seguimiento." : "Seguimiento creado.");
     void cargar();
   }
 
@@ -99,7 +136,7 @@ export function ClienteFicha() {
             : <button className="boton" onClick={() => void actualizar({ activo: true }, "Cliente reactivado.")}><RotateCcw size={16} />Reactivar</button>}
         </div>
       </header>
-      {aviso && <p className="aviso-linea" role="status">{aviso}</p>}
+      {aviso && <p className={`aviso-linea ${/^(No |La IA|Falta|Primero|Analizaste|Tu sesión|Inicia)/.test(aviso) ? "aviso-error" : ""}`} role="status">{aviso}</p>}
 
       <section className="panel">
         <div className="ficha-estado">
@@ -127,6 +164,34 @@ export function ClienteFicha() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="panel">
+        <div className="panel-cabecera">
+          <h2 className="panel-titulo">Reuniones</h2>
+          <button className="boton-secundario boton-chico" onClick={() => setRegistrando(true)}><Plus size={14} />Registrar reunión</button>
+        </div>
+        {reuniones.length === 0 ? (
+          <p className="suave">Aún no hay reuniones. Registra una pegando la transcripción o tus notas, y la IA te dirá qué hacer después.</p>
+        ) : (
+          <div className="reuniones">
+            {reuniones.map((r) => (
+              <ReunionTarjeta
+                key={r.id}
+                reunion={r}
+                analizando={analizando.has(r.id)}
+                temperaturaActual={cliente.temperatura}
+                telefono={cliente.telefono}
+                productos={productos}
+                seguimientoCreado={seguimientos.some((s) => s.reunion_id === r.id)}
+                onAnalizar={() => void analizar(r.id)}
+                onAplicarTemperatura={(t) => void actualizar({ temperatura: t }, `Temperatura cambiada a ${textoTemperatura(t)}.`)}
+                onCrearSeguimiento={(f, m) => void crearSeguimientoSugerido(r.id, f, m)}
+                onEliminar={() => void eliminarReunion(r.id)}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="rejilla-paneles">
@@ -180,6 +245,11 @@ export function ClienteFicha() {
           )}
         </div>
       </section>
+
+      {registrando && (
+        <RegistrarReunion clienteId={cliente.id} onCerrar={() => setRegistrando(false)}
+          onGuardada={(rid) => { setRegistrando(false); void cargar().then(() => analizar(rid)); }} />
+      )}
 
       {editando && (
         <ClienteFormulario cliente={cliente} onCerrar={() => setEditando(false)} onGuardado={() => { setEditando(false); setAviso("Cambios guardados."); void cargar(); }} />

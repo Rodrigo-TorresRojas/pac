@@ -2,6 +2,7 @@ import express from "express";
 import path from "node:path";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { reuniones } from "./rutas/reuniones.js";
 
 /**
  * Servidor de PAC.
@@ -14,6 +15,8 @@ app.use(express.json({ limit: "1mb" }));
 app.get("/api/healthz", (_req, res) => {
   res.json({ ok: true, servicio: "pac", hora: new Date().toISOString() });
 });
+
+app.use("/api", reuniones);
 
 // Cualquier otra ruta /api que no exista
 app.use("/api", (_req, res) => {

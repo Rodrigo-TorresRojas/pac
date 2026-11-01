@@ -194,6 +194,39 @@ tr:last-child td { border-bottom: 0; }
 .historial { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem; }
 .aviso-linea { background: var(--exito-suave); color: var(--exito); border-radius: 10px; padding: 10px 14px; font-size: 0.9rem; font-weight: 500; }
 
+/* ---------- Reuniones ---------- */
+.reuniones { display: flex; flex-direction: column; gap: 14px; }
+.reunion { border: 1px solid var(--borde); border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; background: #fcfdfe; }
+.reunion-cabecera { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.reunion-cabecera > div:first-child { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.reunion-acciones { display: flex; align-items: center; gap: 4px; color: var(--suave); flex-wrap: wrap; justify-content: flex-end; flex: none; max-width: 70%; }
+.confirmar { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--texto); flex-wrap: wrap; }
+.boton-chico { padding: 6px 12px; font-size: 0.82rem; gap: 6px; }
+.boton-peligro { font: inherit; font-weight: 600; font-size: 0.82rem; background: var(--error); color: #fff; border: 0; border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+.analizando { display: flex; align-items: center; gap: 8px; color: var(--principal); font-weight: 500; }
+.gira { animation: girar 1s linear infinite; }
+@keyframes girar { to { transform: rotate(360deg); } }
+.reunion .aviso { align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.aviso-neutro { background: #f6f8fb; border-color: var(--borde); color: var(--texto); }
+.reunion-resumen { line-height: 1.55; }
+.reunion-detalle { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.reunion h4 { margin: 0 0 6px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--suave); display: flex; align-items: center; gap: 6px; }
+.reunion-detalle p { font-size: 0.92rem; line-height: 1.5; }
+.objeciones { margin: 0; padding-left: 18px; font-size: 0.92rem; display: flex; flex-direction: column; gap: 3px; }
+.sugerencias { background: var(--principal-suave); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.sugerencias h4 { color: var(--principal); }
+.sugerencia { display: flex; align-items: center; gap: 10px; font-size: 0.92rem; flex-wrap: wrap; }
+.sugerencia > svg { color: var(--principal); flex: none; }
+.sugerencia > span:first-of-type { flex: 1; min-width: 180px; }
+.hecho-ok { display: inline-flex; align-items: center; gap: 4px; color: var(--exito); font-weight: 600; font-size: 0.85rem; }
+.borrador { background: #fff; border-radius: 10px; padding: 12px 14px; border: 1px solid var(--borde); }
+.borrador p { font-size: 0.92rem; line-height: 1.5; white-space: pre-wrap; }
+.borrador-acciones { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.ver-texto { display: inline-flex; align-items: center; gap: 6px; background: none; border: 0; padding: 0; font: inherit; font-size: 0.85rem; font-weight: 600; color: var(--principal); cursor: pointer; width: fit-content; }
+.girado { transform: rotate(180deg); }
+.transcripcion { max-height: 50vh; overflow-y: auto; white-space: pre-wrap; background: #f4f6fa; border-radius: 10px; padding: 14px; font-size: 0.88rem; line-height: 1.6; overflow-wrap: anywhere; }
+.aviso-error { background: #fdecec; color: var(--error); }
+
 /* ---------- Ventana emergente ---------- */
 .modal-fondo { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); display: grid; place-items: center; padding: 16px; z-index: 50; animation: aparecer 0.15s ease-out; }
 .modal { background: #fff; border-radius: 16px; width: 100%; max-width: 640px; max-height: calc(100dvh - 32px); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25); }
