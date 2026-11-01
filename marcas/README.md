@@ -6,7 +6,7 @@ Para una empresa nueva, copia `plantilla/` con el nombre de la empresa y reempla
 
 | Archivo | Uso |
 |---|---|
-| `marca.json` | Nombre, descripción y los 4 colores (hex `#RRGGBB`) |
+| `marca.json` | Nombre, descripción, los 4 colores (hex `#RRGGBB`) y la ubicación que se propone al crear un cliente |
 | `isotipo.svg` | Solo el símbolo. Ícono de la pestaña del navegador |
 | `logo.svg` | Símbolo arriba y nombre abajo. Pantalla de ingreso |
 | `logo-horizontal.svg` | Símbolo a la izquierda y nombre. Barra superior |

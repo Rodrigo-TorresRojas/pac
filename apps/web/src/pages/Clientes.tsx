@@ -54,7 +54,7 @@ export function Clientes() {
       if (sinPaso && (c.proximo_seguimiento_fecha || cierre.has(c.etapa_id))) return false;
       if (!q) return true;
       if (qDigitos.length >= 3 && (c.telefono ?? "").replace(/\D/g, "").includes(qDigitos)) return true;
-      return [c.nombre, c.institucion, c.especialidad, c.distrito, c.email].some((v) => normal(v).includes(q));
+      return [c.nombre, c.institucion, c.especialidad, c.distrito, c.provincia, c.departamento, c.pais, c.email].some((v) => normal(v).includes(q));
     });
   }, [clientes, texto, etapa, temp, sinPaso, inactivos, cierre]);
 

@@ -196,6 +196,10 @@ tr:last-child td { border-bottom: 0; }
 .modal-cuerpo { padding: 18px 22px 22px; }
 .modal-pie { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
 .ayuda { font-size: 0.85rem; }
+.ubicacion { border: 1px solid var(--borde); border-radius: 12px; padding: 12px 14px 14px; margin: 0; }
+.ubicacion legend { font-size: 0.88rem; font-weight: 600; padding: 0 6px; }
+.ubicacion label > input { margin-top: 6px; }
+select:disabled { background: #f4f6f9; color: var(--suave); }
 .rejilla-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .aviso { display: flex; gap: 10px; background: #fff7ed; border: 1px solid #fed7aa; color: #7c2d12; border-radius: 10px; padding: 12px 14px; font-size: 0.88rem; }
 .aviso svg { flex: none; margin-top: 2px; }

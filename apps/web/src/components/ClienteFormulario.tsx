@@ -5,17 +5,27 @@ import { supabase } from "../lib/supabase";
 import type { Cliente, Duplicado, Temperatura } from "../lib/tipos";
 import { nombreVisible, TEMPERATURAS, textoTemperatura } from "../lib/formato";
 import { Modal } from "./Modal";
+import { UbicacionCampos, type Ubicacion } from "./UbicacionCampos";
+import { marca } from "../lib/marca";
 
-type Campos = Pick<Cliente, "nombre" | "institucion" | "especialidad" | "telefono" | "email" | "distrito" | "temperatura" | "notas">;
+// Sugerencias para escribir la especialidad siempre igual (se puede escribir otra).
+const ESPECIALIDADES = ["Cirugía", "Dermatología", "Ginecología", "Medicina deportiva", "Medicina del dolor", "Medicina estética", "Medicina general", "Medicina integrativa", "Neurología", "Odontología", "Otorrinolaringología", "Podología", "Reumatología", "Terapia física y rehabilitación", "Traumatología", "Urología", "Veterinaria"];
 
-const VACIO: Campos = { nombre: "", institucion: "", especialidad: "", telefono: "", email: "", distrito: "", temperatura: null, notas: "" };
+type Campos = Pick<Cliente, "nombre" | "institucion" | "especialidad" | "telefono" | "email" | "temperatura" | "notas"> & Ubicacion;
+
+const VACIO: Campos = {
+  nombre: "", institucion: "", especialidad: "", telefono: "", email: "", temperatura: null, notas: "",
+  distrito: null, ubigeo: null,
+  ...marca.ubicacion_por_defecto,
+};
 
 function limpiar(c: Campos): Campos {
   const t = (v: string | null) => (v ?? "").trim() || null;
   return {
     nombre: t(c.nombre), institucion: t(c.institucion), especialidad: t(c.especialidad),
-    telefono: t(c.telefono), email: t(c.email)?.toLowerCase() ?? null, distrito: t(c.distrito),
+    telefono: t(c.telefono), email: t(c.email)?.toLowerCase() ?? null,
     temperatura: c.temperatura, notas: t(c.notas),
+    pais: t(c.pais) ?? "Perú", departamento: t(c.departamento), provincia: t(c.provincia), distrito: t(c.distrito), ubigeo: c.ubigeo,
   };
 }
 
@@ -25,7 +35,11 @@ export function ClienteFormulario({ cliente, onCerrar, onGuardado }: {
   onCerrar: () => void;
   onGuardado: (id: string) => void;
 }) {
-  const [campos, setCampos] = useState<Campos>(cliente ? { ...VACIO, ...cliente } : VACIO);
+  const [campos, setCampos] = useState<Campos>(() => {
+    if (!cliente) return VACIO;
+    const { nombre, institucion, especialidad, telefono, email, temperatura, notas, pais, departamento, provincia, distrito, ubigeo } = cliente;
+    return { nombre, institucion, especialidad, telefono, email, temperatura, notas, pais, departamento, provincia, distrito, ubigeo };
+  });
   const [error, setError] = useState<string | null>(null);
   const [duplicados, setDuplicados] = useState<Duplicado[]>([]);
   const [confirmado, setConfirmado] = useState(false);
@@ -73,9 +87,13 @@ export function ClienteFormulario({ cliente, onCerrar, onGuardado }: {
           <label>Clínica o empresa<input value={campos.institucion ?? ""} onChange={poner("institucion")} placeholder="Clínica San Pablo" /></label>
           <label>Teléfono<input type="tel" value={campos.telefono ?? ""} onChange={poner("telefono")} placeholder="987 654 321" /></label>
           <label>Correo<input type="email" value={campos.email ?? ""} onChange={poner("email")} placeholder="ana@clinica.pe" /></label>
-          <label>Especialidad<input value={campos.especialidad ?? ""} onChange={poner("especialidad")} placeholder="Traumatología" /></label>
-          <label>Distrito<input value={campos.distrito ?? ""} onChange={poner("distrito")} placeholder="Miraflores" /></label>
         </div>
+        <label>
+          Especialidad
+          <input list="especialidades" value={campos.especialidad ?? ""} onChange={poner("especialidad")} placeholder="Elige o escribe" />
+          <datalist id="especialidades">{ESPECIALIDADES.map((e) => <option key={e} value={e} />)}</datalist>
+        </label>
+        <UbicacionCampos valor={campos} onCambio={(u) => setCampos((c) => ({ ...c, ...u }))} />
         <fieldset className="opciones">
           <legend>Temperatura</legend>
           {TEMPERATURAS.map((t) => (

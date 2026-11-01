@@ -7,5 +7,10 @@
     "acento": "#0EA5E9",
     "texto": "#0F172A",
     "fondo": "#F5F6F8"
+  },
+  "ubicacion_por_defecto": {
+    "pais": "Perú",
+    "departamento": "Lima",
+    "provincia": "Lima"
   }
 }

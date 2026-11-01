@@ -5,6 +5,7 @@ import { supabase } from "../lib/supabase";
 import type { Cliente, Etapa, Seguimiento, Temperatura as T } from "../lib/tipos";
 import { cuando, diasHasta, enlaceWhatsapp, fechaCorta, hoy, nombreVisible, subtitulo, TEMPERATURAS, textoTemperatura } from "../lib/formato";
 import { ClienteFormulario } from "../components/ClienteFormulario";
+import { textoUbicacion } from "../components/UbicacionCampos";
 
 interface Movimiento {
   id: string;
@@ -163,7 +164,7 @@ export function ClienteFicha() {
             <dt>Teléfono</dt><dd>{cliente.telefono ? <a href={`tel:${cliente.telefono}`}>{cliente.telefono}</a> : "—"}</dd>
             <dt>Correo</dt><dd>{cliente.email ? <a href={`mailto:${cliente.email}`}>{cliente.email}</a> : "—"}</dd>
             <dt>Especialidad</dt><dd>{cliente.especialidad ?? "—"}</dd>
-            <dt>Distrito</dt><dd>{cliente.distrito ?? "—"}</dd>
+            <dt>Ubicación</dt><dd>{textoUbicacion(cliente) || "—"}</dd>
             <dt>Registrado</dt><dd>{fechaCorta(cliente.created_at)}</dd>
           </dl>
           {cliente.notas && <><h3 className="subtitulo-panel">Notas</h3><p className="notas">{cliente.notas}</p></>}

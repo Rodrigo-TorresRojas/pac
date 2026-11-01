@@ -8,7 +8,11 @@ export interface Cliente {
   especialidad: string | null;
   telefono: string | null;
   email: string | null;
+  pais: string;
+  departamento: string | null;
+  provincia: string | null;
   distrito: string | null;
+  ubigeo: string | null;
   etapa_id: string;
   temperatura: Temperatura | null;
   activo: boolean;
