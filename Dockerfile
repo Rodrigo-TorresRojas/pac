@@ -20,7 +20,13 @@ RUN npm run build && npm prune --omit=dev --no-audit --no-fund
 # Etapa 2: solo lo necesario para correr
 FROM node:22-bookworm-slim
 WORKDIR /app
-ENV NODE_ENV=production PORT=3000
+ARG VITE_SUPABASE_URL
+ARG VITE_SUPABASE_ANON_KEY
+ARG MARCA=plantilla
+# El servidor usa la misma marca y la misma URL/clave pública de Supabase que la web.
+# Las claves privadas (Gemini, Granola, Google Maps, Tavily, service_role) se dan al
+# contenedor como variables de entorno al ejecutarlo; nunca se copian a la imagen.
+ENV NODE_ENV=production PORT=3000 MARCA=$MARCA SUPABASE_URL=$VITE_SUPABASE_URL SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
 COPY --from=build --chown=node:node /app/package.json ./package.json
 COPY --from=build --chown=node:node /app/node_modules ./node_modules
 COPY --from=build --chown=node:node /app/apps/server/package.json ./apps/server/package.json
