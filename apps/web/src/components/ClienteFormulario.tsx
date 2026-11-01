@@ -30,13 +30,14 @@ function limpiar(c: Campos): Campos {
 }
 
 /** Crear (sin `cliente`) o editar un cliente en una ventana emergente. */
-export function ClienteFormulario({ cliente, onCerrar, onGuardado }: {
+export function ClienteFormulario({ cliente, inicial, onCerrar, onGuardado }: {
   cliente?: Cliente;
+  inicial?: Partial<Campos>;
   onCerrar: () => void;
   onGuardado: (id: string) => void;
 }) {
   const [campos, setCampos] = useState<Campos>(() => {
-    if (!cliente) return VACIO;
+    if (!cliente) return { ...VACIO, ...inicial };
     const { nombre, institucion, especialidad, telefono, email, temperatura, notas, pais, departamento, provincia, distrito, ubigeo } = cliente;
     return { nombre, institucion, especialidad, telefono, email, temperatura, notas, pais, departamento, provincia, distrito, ubigeo };
   });

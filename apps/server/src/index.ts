@@ -3,6 +3,7 @@ import path from "node:path";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { reuniones } from "./rutas/reuniones.js";
+import { granola } from "./rutas/granola.js";
 
 /**
  * Servidor de PAC.
@@ -17,6 +18,7 @@ app.get("/api/healthz", (_req, res) => {
 });
 
 app.use("/api", reuniones);
+app.use("/api", granola);
 
 // Cualquier otra ruta /api que no exista
 app.use("/api", (_req, res) => {

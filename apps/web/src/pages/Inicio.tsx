@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowRight, Check, Plus } from "lucide-react";
+import { ArrowRight, AudioLines, Check, Plus } from "lucide-react";
+import { contarPorAsignar, EVENTO_BANDEJA } from "../lib/bandeja";
 import { supabase } from "../lib/supabase";
 import { useSesion } from "../lib/sesion";
 import type { ClienteResumen, Etapa, Temperatura as T } from "../lib/tipos";
@@ -25,6 +26,13 @@ export function Inicio() {
   const [pendientes, setPendientes] = useState<Pendiente[]>([]);
   const [hechosMes, setHechosMes] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [porAsignar, setPorAsignar] = useState(0);
+  useEffect(() => {
+    const contar = () => void contarPorAsignar().then(setPorAsignar);
+    contar();
+    window.addEventListener(EVENTO_BANDEJA, contar);
+    return () => window.removeEventListener(EVENTO_BANDEJA, contar);
+  }, []);
 
   const cargar = useCallback(async () => {
     const [c, e, p, h] = await Promise.all([
@@ -87,7 +95,12 @@ export function Inicio() {
           <p className="suave">Panel comercial</p>
           <h1>{saludo()}, {usuario.nombre.split(" ")[0]}</h1>
         </div>
-        <button className="boton boton-acento" onClick={() => navegar("/clientes?nuevo=1")}><Plus size={18} />Nuevo cliente</button>
+        <div className="acciones">
+          {porAsignar > 0 && (
+            <Link to="/clientes/bandeja" className="boton-bandeja"><AudioLines size={16} />{porAsignar} {porAsignar === 1 ? "reunión" : "reuniones"} por asignar</Link>
+          )}
+          <button className="boton boton-acento" onClick={() => navegar("/clientes?nuevo=1")}><Plus size={18} />Nuevo cliente</button>
+        </div>
       </header>
 
       {error && <p className="error">{error}</p>}

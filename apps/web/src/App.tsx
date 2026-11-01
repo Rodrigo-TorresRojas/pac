@@ -7,6 +7,7 @@ import { Login } from "./pages/Login";
 import { Inicio } from "./pages/Inicio";
 import { Clientes } from "./pages/Clientes";
 import { ClienteFicha } from "./pages/ClienteFicha";
+import { Bandeja } from "./pages/Bandeja";
 import { Layout } from "./components/Layout";
 
 export function App() {
@@ -71,6 +72,7 @@ export function App() {
           <Route element={<Layout />}>
             <Route index element={<Inicio />} />
             <Route path="clientes" element={<Clientes />} />
+            <Route path="clientes/bandeja" element={<Bandeja />} />
             <Route path="clientes/:id" element={<ClienteFicha />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>

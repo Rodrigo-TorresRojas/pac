@@ -6,6 +6,7 @@ import type { ClienteResumen, Etapa } from "../lib/tipos";
 import { cuando, diasHasta, nombreVisible, subtitulo, TEMPERATURAS, textoTemperatura } from "../lib/formato";
 import { Temperatura } from "../components/Temperatura";
 import { ClienteFormulario } from "../components/ClienteFormulario";
+import { PestanasClientes } from "../components/PestanasClientes";
 
 /** Quita tildes y mayúsculas para buscar. */
 const normal = (t: string | null | undefined) => (t ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
@@ -70,6 +71,7 @@ export function Clientes() {
         </div>
         <button className="boton boton-acento" onClick={() => cambiar("nuevo", "1")}><Plus size={18} />Nuevo cliente</button>
       </header>
+      <PestanasClientes />
 
       <div className="filtros">
         <label className="buscador">
