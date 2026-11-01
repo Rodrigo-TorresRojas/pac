@@ -4,20 +4,20 @@
 -- =============================================================================
 
 alter table public.clientes
-  add column pais          text not null default 'Perú',
-  add column departamento  text,
-  add column provincia     text,
-  add column ubigeo        text check (ubigeo ~ '^[0-9]{6}$');
+  add column if not exists pais          text not null default 'Perú',
+  add column if not exists departamento  text,
+  add column if not exists provincia     text,
+  add column if not exists ubigeo        text check (ubigeo ~ '^[0-9]{6}$');
 
 comment on column public.clientes.departamento is 'Departamento (Perú) o región/estado (otros países)';
 comment on column public.clientes.provincia is 'Provincia (Perú); vacío en otros países';
 comment on column public.clientes.distrito is 'Distrito (Perú) o ciudad (otros países)';
 comment on column public.clientes.ubigeo is 'Código INEI de 6 dígitos del distrito, solo para Perú';
 
-create index clientes_ubicacion_idx on public.clientes (pais, departamento);
+create index if not exists clientes_ubicacion_idx on public.clientes (pais, departamento);
 
 -- La vista usa c.*: se vuelve a crear para que incluya las columnas nuevas.
-drop view public.clientes_resumen;
+drop view if exists public.clientes_resumen;
 create view public.clientes_resumen
 with (security_invoker = true)
 as

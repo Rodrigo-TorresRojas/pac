@@ -6,6 +6,7 @@
 -- 1. El nombre de la persona deja de ser obligatorio: basta con nombre o institución.
 alter table public.clientes alter column nombre drop not null;
 alter table public.clientes drop constraint if exists clientes_nombre_check;
+alter table public.clientes drop constraint if exists clientes_nombre_o_institucion;
 alter table public.clientes add constraint clientes_nombre_o_institucion check (
   length(trim(coalesce(nombre, ''))) > 0 or length(trim(coalesce(institucion, ''))) > 0
 );
@@ -19,8 +20,8 @@ as $$
   select nullif(right(regexp_replace(coalesce(valor, ''), '\D', '', 'g'), 9), '');
 $$;
 
-create index clientes_telefono_idx on public.clientes (public.telefono_normalizado(telefono));
-create index clientes_email_idx on public.clientes (lower(trim(email)));
+create index if not exists clientes_telefono_idx on public.clientes (public.telefono_normalizado(telefono));
+create index if not exists clientes_email_idx on public.clientes (lower(trim(email)));
 
 -- 3. Clientes con el mismo teléfono o correo (para avisar antes de guardar).
 --    security invoker: respeta los permisos de quien pregunta.
